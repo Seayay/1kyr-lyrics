@@ -1,8 +1,8 @@
-# 1KYR Lyrics
+# 🎵 1KYR Lyrics
 
 > TTML Lyrics File Storage
 
-本仓库用来存储思遥方制作或从 Apple Music 抓取的逐字歌词，以 CC0 协议授权。
+本仓库用来存储思遥方制作或从 Apple Music 抓取的 Apple 格式 TTML 逐音节歌词，以 CC0 协议授权。
 
 # 🔍 我该如何搜索歌词？
 
