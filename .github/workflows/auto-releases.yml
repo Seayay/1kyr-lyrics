@@ -31,11 +31,18 @@ jobs:
           echo "current_year=${current_year}" >> $GITHUB_ENV
           echo "last_month=${last_month}" >> $GITHUB_ENV
 
+      - name: Show current year and last month
+        run: |
+          echo "Current year: ${current_year}"
+          echo "Last month: ${last_month}"
+
       - name: Create zip file
         run: |
           # 创建一个 zip 文件，包含当前年份和上个月份的文件夹内容
           mkdir -p release
           zip -r release/${current_year}-${last_month}.zip ${current_year}/${last_month}/
+          # 列出 release 目录，确保文件已生成
+          ls -lh release/
 
       - name: Generate Git tag
         id: tag
@@ -51,4 +58,4 @@ jobs:
           tag_name: ${{ env.TAG }}
           files: release/${current_year}-${last_month}.zip
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}  # 使用 Personal Access Token (PAT)
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
