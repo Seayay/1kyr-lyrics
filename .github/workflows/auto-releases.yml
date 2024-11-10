@@ -30,8 +30,7 @@ jobs:
 
       - name: "打包"
         run: |
-          mkdir -p release
-          zip -r release/${current_year}-${last_month}.zip ${current_year}/${last_month}/
+          zip -r ${current_year}-${last_month}.zip ${current_year}/${last_month}/
 
       - name: "生成 Git tag"
         id: tag
@@ -44,6 +43,6 @@ jobs:
         uses: softprops/action-gh-release@v2.0.9
         with:
           tag_name: ${{ env.TAG }}
-          files: release/${current_year}-${last_month}.zip
+          files: ${current_year}-${last_month}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
