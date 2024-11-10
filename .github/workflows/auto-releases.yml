@@ -1,26 +1,29 @@
-name: "自动发布 (月度)"
+name: Auto Release for Last Month
 
 on:
   schedule:
-    - cron: '0 0 1 * *'
-  workflow_dispatch:
+    - cron: '0 0 1 * *'  # 每月 1 号运行
+  workflow_dispatch:  # 允许手动触发 workflow
 
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: "检查存储库"
+      - name: Checkout the repository
         uses: actions/checkout@v3
 
-      - name: "获取当前时间"
+      - name: Get current year and last month
         id: date
         run: |
+          # 获取当前年份和上个月份
           current_month=$(date +'%m')
           
           if [ "$current_month" == "01" ]; then
+            # 如果是1月，则上个月是去年12月
             current_year=$(date +'%Y' --date="last year")
             last_month="12"
           else
+            # 其他月份直接使用当前年份和上个月份
             current_year=$(date +'%Y')
             last_month=$(date --date='1 month ago' +'%m')
           fi
@@ -28,21 +31,24 @@ jobs:
           echo "current_year=${current_year}" >> $GITHUB_ENV
           echo "last_month=${last_month}" >> $GITHUB_ENV
 
-      - name: "打包"
+      - name: Create zip file
         run: |
-          zip -r ${current_year}-${last_month}.zip ${current_year}/${last_month}/
+          # 创建一个 zip 文件，包含当前年份和上个月份的文件夹内容
+          mkdir -p release
+          zip -r release/${current_year}-${last_month}.zip ${current_year}/${last_month}/
 
-      - name: "生成 Git tag"
+      - name: Generate Git tag
         id: tag
         run: |
+          # 创建一个唯一的 Git tag，基于年份和月份
           tag="${current_year}-${last_month}"
           echo "Generated tag: $tag"
           echo "TAG=${tag}" >> $GITHUB_ENV
 
-      - name: "发布"
-        uses: softprops/action-gh-release@v2.0.9
+      - name: Upload Release Asset
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.TAG }}
-          files: ${current_year}-${last_month}.zip
+          files: release/${current_year}-${last_month}.zip
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}  # 使用 Personal Access Token (PAT)
