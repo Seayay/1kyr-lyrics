@@ -33,9 +33,17 @@ jobs:
           mkdir -p release
           zip -r release/${current_year}-${last_month}.zip ${current_year}/${last_month}/
 
+      - name: "生成 Git tag"
+        id: tag
+        run: |
+          tag="${current_year}-${last_month}"
+          echo "Generated tag: $tag"
+          echo "TAG=${tag}" >> $GITHUB_ENV
+
       - name: "发布"
         uses: softprops/action-gh-release@v2.0.9
         with:
+          tag_name: ${{ env.TAG }}
           files: release/${current_year}-${last_month}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
