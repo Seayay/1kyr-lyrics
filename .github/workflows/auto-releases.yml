@@ -1,0 +1,41 @@
+name: Auto Release for Last Month
+
+on:
+  schedule:
+    - cron: '0 0 1 * *'
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+
+      - name: Get current year and last month
+        id: date
+        run: |
+          current_month=$(date +'%m')
+          
+          if [ "$current_month" == "01" ]; then
+            current_year=$(date +'%Y' --date="last year")
+            last_month="12"
+          else
+            current_year=$(date +'%Y')
+            last_month=$(date --date='1 month ago' +'%m')
+          fi
+
+          echo "current_year=${current_year}" >> $GITHUB_ENV
+          echo "last_month=${last_month}" >> $GITHUB_ENV
+
+      - name: Create zip file
+        run: |
+          mkdir -p release
+          zip -r release/${current_year}-${last_month}.zip ${current_year}/${last_month}/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2.0.9
+        with:
+          files: release/${current_year}-${last_month}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
