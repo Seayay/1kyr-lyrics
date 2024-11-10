@@ -1,4 +1,4 @@
-name: Auto Release for Last Month
+name: "自动发布 (月度)"
 
 on:
   schedule:
@@ -9,10 +9,10 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout the repository
+      - name: "检查存储库"
         uses: actions/checkout@v3
 
-      - name: Get current year and last month
+      - name: "获取当前时间"
         id: date
         run: |
           current_month=$(date +'%m')
@@ -28,12 +28,12 @@ jobs:
           echo "current_year=${current_year}" >> $GITHUB_ENV
           echo "last_month=${last_month}" >> $GITHUB_ENV
 
-      - name: Create zip file
+      - name: "打包"
         run: |
           mkdir -p release
           zip -r release/${current_year}-${last_month}.zip ${current_year}/${last_month}/
 
-      - name: Create GitHub Release
+      - name: "发布"
         uses: softprops/action-gh-release@v2.0.9
         with:
           files: release/${current_year}-${last_month}.zip
