@@ -1,0 +1,35 @@
+on:
+  issues:
+    types: [opened]
+jobs:
+  process_issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check issue content
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issueBody = context.payload.issue.body;
+            const remarksLabel = '备注';
+            const noResponse = 'No Response';
+
+            // 使用正则表达式查找备注字段及其标题行
+            const regex = new RegExp(`- type: textarea\\n\\s*id: remarks\\n\\s*attributes:\\n\\s*label: "${remarksLabel}"\\n\\s*value: (.*)`, 'i');
+            const match = issueBody.match(regex);
+
+            if (match && match[1].trim() === noResponse) {
+              // 删除匹配的字段及其标题行
+              const updatedBody = issueBody.replace(regex, '').trim();
+
+              // 更新 Issue 内容
+              await github.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: updatedBody
+              });
+
+              console.log(`Removed remarks field with value '${noResponse}' from issue #${context.issue.number}.`);
+            } else {
+              console.log('No matching remarks field found or value is not "No Response".');
+            }
