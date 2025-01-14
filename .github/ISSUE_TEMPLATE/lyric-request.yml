@@ -1,0 +1,39 @@
+name: "🎵 单曲歌词请求"
+description: 为单个歌曲请求歌词。
+title: "🎵 [艺人] - <歌曲名>"
+labels: [
+  "lyric-request"
+]
+body:
+  - type: input
+    id: song
+    attributes:
+      label: "歌曲标题"
+      description: 请输入这首歌曲的艺人与歌曲名
+      placeholder: 艺人 - 歌曲名
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: "音乐 URL"
+      description: 请输入这首歌曲的 URL
+      placeholder: ex. https://music.163.com/#/song?id=1
+    validations:
+      required: true
+  - type: textarea
+    id: remarks
+    attributes:
+      label: "备注"
+      description: 如有备注，请在此处输入
+  - type: dropdown
+    id: apple-music
+    attributes:
+      label: "Apple Music 逐音节歌词"
+      description: 这首歌在 Apple Music 上是否有逐音节歌词？
+      options:
+        - 是
+        - 否
+        - 我不清楚
+    validations:
+      required: true
