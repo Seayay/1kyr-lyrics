@@ -10,7 +10,7 @@ jobs:
         with:
           script: |
             const issueBody = context.payload.issue.body;
-            const remarksSection = /###备注\n\n_No response_\n\n?/;
+            const remarksSection = /### 备注\n\n_No response_\n\n?/;
 
             if (remarksSection.test(issueBody)) {
               const updatedBody = issueBody.replace(remarksSection, '').trim();
