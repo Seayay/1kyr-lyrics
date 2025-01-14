@@ -2,7 +2,8 @@ name: "🎵 单曲歌词请求"
 description: 为单个歌曲请求歌词。
 title: "🎵 [艺人] - <歌曲名>"
 labels: [
-  "lyric-request"
+  "歌词请求",
+  "待回复"
 ]
 body:
   - type: input
@@ -32,8 +33,8 @@ body:
       label: "Apple Music 逐音节歌词"
       description: 这首歌在 Apple Music 上是否有逐音节歌词？
       options:
-        - 是
-        - 否
+        - 有
+        - 无
         - 我不清楚
     validations:
       required: true
